@@ -135,15 +135,3 @@ Example:
 
 
 
-;; ## what works:
-
-;; - PATH being passed as a command ex.(`/bin/ls`).
-;; - single commands ex.(`ls`)
-;; - muiltiple commands : parsed user input : (`ls -l`)
-
-;; ## Bugs:
-
-;; - Exit - doesn't work first time it's typed in.
-;; - exit and env don't work togther, either or works.(only one can be typed in at the time the shell is running)
-;; - memory leak
-;; - Etc...

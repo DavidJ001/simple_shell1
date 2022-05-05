@@ -1,4 +1,4 @@
-![simple_shell](https://i.imgur.com/1qxIw3q.png)
+;; ![simple_shell](https://i.imgur.com/1qxIw3q.png)
 
 # Shell Project `(simple Shell)`
 

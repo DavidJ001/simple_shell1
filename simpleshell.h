@@ -1,11 +1,13 @@
 #ifndef SIMPLESHELL_H
 #define SIMPLESHELL_H
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+
 /* environ declaration */
 extern char **environ;
 

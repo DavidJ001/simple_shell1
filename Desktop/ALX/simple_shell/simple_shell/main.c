@@ -1,73 +1,48 @@
-#include "holberton.h"
-
+#include "lib.h"
 /**
- * free_data - frees data structure
- *
- * @datash: data structure
- * Return: no return
- */
-void free_data(data_shell *datash)
+  * main - main
+  * Return: int
+  */
+int main(void)
 {
-	unsigned int i;
+	char *buf, *simp, *slash;
+	size_t bufsize = 1024;
+	int chara;
+	char **doub, **simpD;
+	int qq = 0, q = 0, x = 0, y = 0;
 
-	for (i = 0; datash->_environ[i]; i++)
+	while (1)
 	{
-		free(datash->_environ[i]);
+		if (isatty(0))
+			write(1, "$ ", 2);
+
+		buf = malloc(sizeof(char *) * bufsize);
+		if (!buf)
+			return (0);
+
+		chara = getline(&buf, &bufsize, stdin);
+		if (chara == -1)
+			return (-1);
+		if ((buf[chara - 1]) == '\n')
+			buf[chara - 1] = 0;
+		q = qStrtok(buf);
+		doub = strD2(buf);
+		simp = compEnv();
+		qq = qStrtokPath(simp);
+		simpD = strD2Path(simp);
+		slash = str_concat("/", doub[0]);
+		concPath(simpD, slash);
+		simpD[qq] = doub[0];
+		executen(simpD, doub);
+		free(buf);
+		free(simp);
+		free(slash);
+		for (; simpD[x]; x++)
+			free(simpD[x]);
+		free(simpD);
+		for (y = q; y >= 1; y--)
+			free(doub[y]);
+		free(doub);
 	}
-
-	free(datash->_environ);
-	free(datash->pid);
-}
-
-/**
- * set_data - Initialize data structure
- *
- * @datash: data structure
- * @av: argument vector
- * Return: no return
- */
-void set_data(data_shell *datash, char **av)
-{
-	unsigned int i;
-
-	datash->av = av;
-	datash->input = NULL;
-	datash->args = NULL;
-	datash->status = 0;
-	datash->counter = 1;
-
-	for (i = 0; environ[i]; i++)
-		;
-
-	datash->_environ = malloc(sizeof(char *) * (i + 1));
-
-	for (i = 0; environ[i]; i++)
-	{
-		datash->_environ[i] = _strdup(environ[i]);
-	}
-
-	datash->_environ[i] = NULL;
-	datash->pid = aux_itoa(getpid());
-}
-
-/**
- * main - Entry point
- *
- * @ac: argument count
- * @av: argument vector
- *
- * Return: 0 on success.
- */
-int main(int ac, char **av)
-{
-	data_shell datash;
-	(void) ac;
-
-	signal(SIGINT, get_sigint);
-	set_data(&datash, av);
-	shell_loop(&datash);
-	free_data(&datash);
-	if (datash.status < 0)
-		return (255);
-	return (datash.status);
+	return (0);
 }

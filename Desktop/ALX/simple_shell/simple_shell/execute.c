@@ -1,89 +1,50 @@
-#include "main.h"
-
+#include "lib.h"
 /**
- * check_execution - checks how to execute the command.
- * @tokens: array that contains tokens
- * @string: string captured in the stdin.
- * @error: error.
- * Return: Nothing.
- */
-
-void check_execution(char **tokens, char *string, int *error)
+  *executen - execute the program and the child
+  *@d: Array string of PATH
+  *@a: Array string of inputs
+  *Return: int
+  */
+int executen(char **d, char **a)
 {
-	char *ruta, **tmp;
-	struct stat st;
+	int i = 0, axs = 0, vE = 0, eX = 0, x = 0;
+	pid_t pid = 0;
+	int status;
+	char **envI;
 
-	if (tokens[0][0] == '/' || tokens[0][0] == '.')
+	if (a[0] == NULL)
+		return (0);
+
+	vE = _strcmp(a[0], "env");
+	eX = _strcmp(a[0], "exit");
+
+	if (vE == 0)
 	{
-		if (stat(tokens[0], &st) == 0)
-			execute(tokens, string, error);
-		else
+		envI = getEnviron();
+		for (; envI[x]; x++)
+			printf("%s\n", envI[x]);
+	}
+
+	if (eX == 0)
+		exit(98);
+
+	pid = fork();
+
+	if (pid == 0)
+	{
+		for (i = 0; d[i]; i++)
 		{
-			*error = 2;
-			print_error(tokens, error);
-			free(tokens);
+			axs = access(d[i], X_OK);
+			if (axs == 0)
+			{
+				execve(d[i], a, NULL);
+				break;
+			}
 		}
+		printf("IT DOES NOT WORK!\n");
+		exit(98);
 	}
-	else
-	{
-		tmp = malloc(2 * sizeof(char *));
-		tmp[0] = tokens[0];
-		tmp[1] = NULL;
-		ruta = find_path(tokens[0]);
-		tokens[0] = ruta;
-		if (tokens[0] == NULL)
-		{
-			*error = 1;
-			print_error(tmp, error);
-			free(tokens);
-		}
-		else
-			execute(tokens, string, error);
-		free(ruta);
-		free(tmp);
-	}
-}
+		wait(&status);
 
-/**
- * execute - executes the command.
- * @tokens: array that contains tokens
- * @string: string captured in the stdin.
- * @error: error.
- * Return: Nothing.
- */
-
-void execute(char **tokens, char *string, int *error)
-{
-	pid_t fork_id, w_pid; /*w_pid, pid, ppid*/
-
-	/*printf("in execute tokens [0] = %s\n", tokens[0]);*/
-	fork_id = fork();
-
-	if (fork_id == -1)
-	{
-		*error = 2;
-		print_error(tokens, error);
-		free(tokens);
-	}
-
-	if (fork_id == 0)
-	{
-		if (execv(tokens[0], tokens) == -1)
-		{
-			*error = 127;
-			print_error(tokens, error);
-			free(tokens);
-			free(string);
-		}
-		free(tokens);
-		free(string);
-	}
-
-	if (fork_id != 0)
-	{
-		w_pid = wait(NULL);
-		if (w_pid == -1)
-			perror("./SHELLY4");
-		free(tokens);
-	}
+	return (0);
 }
